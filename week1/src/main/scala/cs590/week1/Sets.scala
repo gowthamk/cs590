@@ -30,24 +30,35 @@ trait FunSets {
   /**
    * TODO: construct a single-element Set
    */
-  def set(elem: Int): Set = ???
+  def set(elem: Int): Set = (i:Int) => i==elem
+
+  def emptySet = (i:Int) => false
 
   /**
    * TODO: implement union, intersection, difference, etc
    */
-  def union(s: Set, t: Set): Set = ???
+  def union(s: Set, t: Set): Set = (i:Int) => s(i) || t(i)
 
-  def intersect(s: Set, t: Set): Set = ???
+  def intersect(s: Set, t: Set): Set = (i:Int) => s(i) && t(i)
 
-  def diff(s: Set, t: Set): Set = ???
+  def diff(s: Set, t: Set): Set = (i:Int) => s(i) && !(t(i))
 
-  def filter(s: Set, p: Int => Boolean): Set = ???
+  def filter(s: Set, p: Int => Boolean): Set = (i:Int) => s(i) && p(i)
 
-  def forall(s: Set, p: Int => Boolean): Boolean = ???
+  def forall(s: Set, p: Int => Boolean): Boolean = {
+    val xs = for (i <- -1000 to 1000 if contains(s,i)) yield i
+    xs.forall(p)
+  }
 
-  def exists(s: Set, p: Int => Boolean): Boolean = ???
+  def exists(s: Set, p: Int => Boolean): Boolean = {
+    val xs = for (i <- -1000 to 1000 if contains(s,i)) yield i
+    xs.exists(p)
+  }
 
-  def map(s: Set, f: Int => Int): Set = ???
+  def map(s: Set, f: Int => Int): Set = {
+    val xs = for (i <- -1000 to 1000 if contains(s,i)) yield f(i)
+    xs.foldLeft[Set] (emptySet) ((s,i) => union(s,set(i)))
+  }
 
 }
 

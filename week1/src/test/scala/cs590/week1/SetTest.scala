@@ -38,19 +38,56 @@ class FunSetTest extends FunSuite with FunSets {
    * missing. Change to 'test' to run them.
    */
 
-  ignore("set(1) contains 1") {
+  test("set(1) contains 1") {
     assert(contains(set(1), 1))
   }
 
-  ignore("set(1) does not contain 2") {
+  test("set(1) does not contain 2") {
     assert(!contains(set(1), 2))
   }
 
-  ignore("union contains all elements") {
+  test("union contains all elements") {
     val s = union(set(1), set(2))
     assert(contains(s, 1), "Union 1")
     assert(contains(s, 2), "Union 2")
     assert(!contains(s, 3), "Union 3")
+  }
+
+  test("Diff: {1,2,3} - {1,2}") {
+    val s1 = union(union(set(1),set(2)),set(3))
+    val s2 = union(set(1),set(2))
+    val s = diff(s1,s2)
+    assert(!contains(s, 1), "Union 1")
+    assert(!contains(s, 2), "Union 2")
+    assert(contains(s, 3), "Union 3")
+  }
+
+  test("Filter({1,2,3},fn i => i>=2)") {
+    val s1 = union(union(set(1),set(2)),set(3))
+    val s = filter(s1, (i:Int) => i>=2)
+    assert(contains(s, 2), "Union 2")
+    assert(contains(s, 3), "Union 3")
+  }
+
+  test("Forall is true iff all elements qualify") {
+    val s = union(union(set(1),set(2)),set(3))
+    assert(forall(s, (i:Int) => i>=1))
+    assert(!forall(s, (i:Int) => i>=2))
+  }
+
+  test("Exists is true if atleast one element qualifies") {
+    val s = union(union(set(1),set(2)),set(3))
+    assert(exists(s, (i:Int) => i>=1))
+    assert(exists(s, (i:Int) => i>=2))
+    assert(!exists(s, (i:Int) => i<1))
+  }
+
+  test("map {1,2,3} (+1) = {2,3,4}") {
+    val s = map(union(union(set(1),set(2)),set(3)), (i:Int) => i+1)
+    assert(contains(s, 2), "Map 2")
+    assert(contains(s, 3), "Map 3")
+    assert(contains(s,4), "Map 4")
+
   }
 
 
